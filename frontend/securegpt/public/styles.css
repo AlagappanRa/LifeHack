@@ -28,6 +28,7 @@ body {
 .sidebar-logo img {
     width: 50px;
     height: 50px;
+    border-radius: 50%;
 }
 
 .sidebar-nav ul {
@@ -96,6 +97,9 @@ body {
 .logo-center img {
     width: 80px;
     height: 80px;
+    filter: invert(100%);
+    background-color: #1a1a1a;
+    border-radius: 50%;
 }
 
 .buttons {
