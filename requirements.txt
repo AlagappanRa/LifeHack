@@ -1,5 +1,4 @@
 annotated-types==0.7.0
-apiverve-news==1.0.11
 bbc-news==1.0.1
 blis==0.7.11
 catalogue==2.0.10
