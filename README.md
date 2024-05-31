@@ -17,3 +17,6 @@ For example: https://www.kaggle.com/code/gunesevitan/nlp-with-disaster-tweets-ed
 
 # Final scrapable content after context extraction
 - 1491
+
+### References
+https://medium.com/@maleeshadesilva21/preprocessing-steps-for-natural-language-processing-nlp-a-beginners-guide-d6d9bf7689c9
