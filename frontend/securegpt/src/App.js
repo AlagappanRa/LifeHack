@@ -57,6 +57,7 @@ function App() {
             </div>
           </div>
         </div>
+        <TextBox />
         <div className="footer">
           <div className="message-box">
             <input type="text" placeholder="Message SecureGPT" />
@@ -65,6 +66,14 @@ function App() {
           <div className="info">SecureGPT can make mistakes. Check important info.</div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function TextBox() {
+  return (
+    <div className="textstuff">
+      <input type="text" className="textbox" placeholder="Type something..." />
     </div>
   );
 }
