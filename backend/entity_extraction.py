@@ -4,6 +4,7 @@ import spacy
 import networkx as nx
 import matplotlib.pyplot as plt
 from transformers import pipeline
+import pickle
 
 ## 1. Entity Extraction
 # Load SpaCy model
@@ -46,14 +47,9 @@ for entry in df['entities']:
             G.add_edge(previous_entity[0], ent[0])
         previous_entity = ent
 
-# Visualize the graph
-plt.figure(figsize=(12, 8))
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True, node_size=5000, node_color="skyblue", font_size=10, font_weight="bold", edge_color="gray")
-plt.show()
-
-# Save the knowledge graph to a file
-nx.write_gpickle(G, "knowledge_graph.gpickle")
+# Save the knowledge graph to a file using pickle
+with open("knowledge_graph.gpickle", "wb") as f:
+    pickle.dump(G, f)
 
 print("Knowledge graph created and saved to knowledge_graph.gpickle")
 
@@ -63,7 +59,8 @@ print("Knowledge graph created and saved to knowledge_graph.gpickle")
 qa_pipeline = pipeline("question-answering")
 
 # Load the knowledge graph
-G = nx.read_gpickle("knowledge_graph.gpickle")
+with open("knowledge_graph.gpickle", "rb") as f:
+    G = pickle.load(f)
 
 # Function to create a context from the knowledge graph
 def create_context(node):
