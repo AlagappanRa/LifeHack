@@ -120,7 +120,7 @@ elif 'current_page' in st.session_state and st.session_state['current_page'] == 
             
         st.session_state['chat_history'] += f"You: {user_input}\nChatbot: {response}\n"
     
-    st.text_area("Chat History:", value=st.session_state['chat_history'], height=300, key="chat_history")
+    st.text_area("Chat History:", value=st.session_state['chat_history'], height=300, key="display_chat_history")
 else:
     # Default view when the page loads for the first time or current_page is not set
     user_input = st.text_input("Enter your query here:", key="user_input")
@@ -143,7 +143,6 @@ else:
         
         st.session_state['chat_history'] += f"You: {user_input}\nChatbot: {response}\n"
     
-    st.text_area("Chat History:", value=st.session_state['chat_history'], height=300, key="chat_history")
+    st.text_area("Chat History:", value=st.session_state['chat_history'], height=300, key="display_chat_history")
 
 st.markdown("---")
-st.markdown("<h4 style='text-align: center;'>Please use this information responsibly. Built with ❤️ using Streamlit</h4>", unsafe_allow_html=True)
