@@ -35,7 +35,7 @@ def extract_entities(doc) -> list[tuple[str, str]]:
 def main():
 
     # Load JSON data with UTF-8 encoding
-    with open("backend/content_dataset.json", "r", encoding="utf-8-sig") as file:
+    with open("output.json", "r", encoding="utf-8-sig") as file:
         data = json.load(file)
 
     # Convert JSON data to DataFrame
