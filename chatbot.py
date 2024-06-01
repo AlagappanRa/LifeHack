@@ -6,21 +6,58 @@ import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from transformers import pipeline
+import boto3
+import os
 
-# Load necessary resources
+# Access secrets
+aws_access_key_id = st.secrets["default"]["aws_access_key_id"]
+aws_secret_access_key = st.secrets["default"]["aws_secret_access_key"]
+
+# Create S3 client
+s3 = boto3.client(
+    's3',
+    aws_access_key_id=aws_access_key_id,
+    aws_secret_access_key=aws_secret_access_key
+)
+
+# Function to download files from S3
+def download_from_s3(bucket_name, file_key, download_path):
+    s3.download_file(bucket_name, file_key, download_path)
+
+# Load necessary resources with error handling
 @st.cache_resource
 def load_resources():
-    # Load the Faiss index and data
-    index = faiss.read_index("faiss_index.bin")
-    df = pd.read_pickle("data_with_embeddings.pkl")
+    try:
+        # Define S3 bucket and file paths
+        bucket_name = "securegpt"
+        data_file_key = "data_with_embeddings.pkl"
+        faiss_index_key = "faiss_index.bin"
 
-    # Load the sentence transformer model
-    semantic_model = SentenceTransformer('all-MiniLM-L6-v2')
+        # Define local paths to save the downloaded files
+        data_file_path = "data_with_embeddings.pkl"
+        faiss_index_path = "faiss_index.bin"
 
-    # Load the question answering pipeline
-    qa_pipeline = pipeline("question-answering", model="distilbert/distilbert-base-cased-distilled-squad")
+        # Download the files from S3
+        download_from_s3(bucket_name, data_file_key, data_file_path)
+        download_from_s3(bucket_name, faiss_index_key, faiss_index_path)
 
-    return index, df, semantic_model, qa_pipeline
+        # Load the Faiss index
+        index = faiss.read_index(faiss_index_path)
+
+        # Load the data
+        df = pd.read_pickle(data_file_path)
+
+        # Load the sentence transformer model
+        semantic_model = SentenceTransformer('all-MiniLM-L6-v2')
+
+        # Load the question answering pipeline with a specific model
+        qa_pipeline = pipeline("question-answering", model="distilbert/distilbert-base-cased-distilled-squad")
+
+        return index, df, semantic_model, qa_pipeline
+
+    except Exception as e:
+        st.error(f"Error loading resources: {e}")
+        raise
 
 index, df, semantic_model, qa_pipeline = load_resources()
 
