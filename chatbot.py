@@ -1,10 +1,41 @@
 import streamlit as st
 import time
+import pickle
+import faiss
+import numpy as np
+import pandas as pd
+from sentence_transformers import SentenceTransformer
+from transformers import pipeline
+
+# Load necessary resources
+@st.cache_resource
+def load_resources():
+    # Load the Faiss index and data
+    index = faiss.read_index("faiss_index.bin")
+    df = pd.read_pickle("data_with_embeddings.pkl")
+
+    # Load the sentence transformer model
+    semantic_model = SentenceTransformer('all-MiniLM-L6-v2')
+
+    # Load the question answering pipeline
+    qa_pipeline = pipeline("question-answering", model="distilbert/distilbert-base-cased-distilled-squad")
+
+    return index, df, semantic_model, qa_pipeline
+
+index, df, semantic_model, qa_pipeline = load_resources()
 
 def process_query(user_input):
-    # Simulate some processing delay
-    time.sleep(2)  # Simulates the time taken to query a knowledge graph
-    return f"Received your message: '{user_input}'. How can I assist further?"
+    # Perform semantic search to get the most relevant text segments
+    query_embedding = semantic_model.encode([user_input])
+    distances, indices = index.search(np.array(query_embedding), 3)
+    results = df.iloc[indices[0]]
+
+    # Combine the retrieved text into a single context
+    context = " ".join(results['cleaned_text'].tolist())
+    
+    # Generate the answer using the QA model
+    response = qa_pipeline(question=user_input, context=context)
+    return response['answer']
 
 # Initialize chat history if not already present
 if 'chat_history' not in st.session_state:
