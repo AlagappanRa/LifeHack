@@ -10,8 +10,8 @@ import boto3
 import os
 
 # Access secrets
-aws_access_key_id = st.secrets["default"]["aws_access_key_id"]
-aws_secret_access_key = st.secrets["default"]["aws_secret_access_key"]
+aws_access_key_id = st.secrets["aws_access_key_id"]
+aws_secret_access_key = st.secrets["aws_secret_access_key"]
 
 # Create S3 client
 s3 = boto3.client(
